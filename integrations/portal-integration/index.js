@@ -8,11 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default function portals() {
-  // Regex to find portal content.
-  // The 's' flag allows '.' to match newlines, capturing multi-line content.
+  // Match portal blocks with multiline content and capture portal ID
   const portalRegex =
-    /<!--__ASTRO_PORTAL__START__-->(.*?)<!--__ASTRO_PORTAL__END__-->/gs;
-  const outletMarker = "<!--__ASTRO_PORTAL_OUTLET__-->";
+    /<!--__ASTRO_PORTAL__START__-->\s*([\s\S]*?<div[^>]*data-portal=["'](.*?)["'][^>]*>[\s\S]*?<\/div>[\s\S]*?)<!--__ASTRO_PORTAL__END__-->/g;
+  const outletRegex =
+    /<!--__ASTRO_PORTAL_OUTLET__-->\s*<div[^>]*data-outlet=["'](.*?)["'][^>]*>[\s\S]*?<\/div>/g;
 
   return {
     name: "astro-portals",
@@ -24,6 +24,7 @@ export default function portals() {
           injectScript("page", scriptContent);
         }
       },
+
       "astro:build:done": async ({ dir }) => {
         console.log("Portal integration: Processing built files...");
 
@@ -34,34 +35,29 @@ export default function portals() {
           try {
             let htmlContent = await fs.readFile(filePath, "utf-8");
 
-            // Find all portal content blocks in the HTML
             const portalMatches = [...htmlContent.matchAll(portalRegex)];
-            const portalContents = portalMatches.map((match) => match[1]);
+            const outletMatches = [...htmlContent.matchAll(outletRegex)];
 
-            // If there are no portals or no outlet in this file, skip it.
-            if (
-              portalContents.length === 0 ||
-              !htmlContent.includes(outletMarker)
-            ) {
+            if (portalMatches.length === 0 || outletMatches.length === 0) {
               continue;
             }
 
-            console.log(
-              `Found ${portalContents.length} portal(s) in ${path.basename(
-                filePath
-              )}`
-            );
+            const portalMap = new Map();
+            for (const match of portalMatches) {
+              const fullBlock = match[0];
+              const innerContent = match[1];
+              const portalId = match[2];
+              if (!portalMap.has(portalId)) portalMap.set(portalId, []);
+              portalMap.get(portalId).push(innerContent);
+            }
 
-            // Remove the original portal blocks from the HTML
             htmlContent = htmlContent.replace(portalRegex, "");
 
-            // Combine all found portal contents
-            const combinedPortals = portalContents.join("\n");
+            htmlContent = htmlContent.replace(outletRegex, (match, id) => {
+              const portals = portalMap.get(id)?.join("\n") || "";
+              return portals;
+            });
 
-            // Replace the outlet marker with the combined portal content
-            htmlContent = htmlContent.replace(outletMarker, combinedPortals);
-
-            // Write the modified HTML back to the file
             await fs.writeFile(filePath, htmlContent, "utf-8");
             console.log(
               `Successfully processed portals for ${path.basename(filePath)}`
@@ -70,19 +66,14 @@ export default function portals() {
             console.error(`Error processing file ${filePath}:`, error);
           }
         }
+
         console.log("Portal integration: Processing complete.");
       },
     },
   };
 }
 
-/**
- * Recursively finds all HTML files in a given directory.
- * @param {string} dir  The directory to search in.
- * @returns A promise that resolves to an array of file paths.
- */
 async function findHtmlFiles(dir) {
-  /** @type {string[]} */
   let files = [];
   const entries = await fs.readdir(dir, { withFileTypes: true });
 

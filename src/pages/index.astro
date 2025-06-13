@@ -14,13 +14,21 @@ import Outlet from "../components/Outlet.astro";
         <Portal id="test">
           <p>portal content</p>
         </Portal>
+
+        <hr />
+
+        <Portal id="test2">
+          <p>portal content 2</p>
+        </Portal>
       </fieldset>
 
       <fieldset>
         <legend> outlet </legend>
 
-        <Outlet id="tes" />
+        <Outlet id="test" />
+        <hr />
+        <Outlet id="test2" />
       </fieldset>
-    </main></body
-  >
+    </main>
+  </body>
 </html>
