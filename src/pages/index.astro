@@ -1,26 +1,19 @@
 ---
-import Outlet from "../components/Outlet.astro";
 import Portal from "../components/Portal.astro";
+import Outlet from "../components/Outlet.astro";
 ---
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
   <body>
-    <h1>Astro-Portals</h1>
+    <h1>Astro Portals example</h1>
+
     <div>
-      portal
       <Portal>
         <p>This is inside the portal</p>
       </Portal>
     </div>
+
     <div>
-      outlet
       <Outlet />
     </div>
   </body>

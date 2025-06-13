@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
-import portalIntegration from "./integrations/portal-integration/index.js";
+import portals from "./integrations/portal-integration";
 
 export default defineConfig({
-  integrations: [portalIntegration()],
+  integrations: [portals()],
 });
