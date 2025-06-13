@@ -1,1 +1,10 @@
-<!--__ASTRO_PORTAL__START__-->{(<slot />)}<!--__ASTRO_PORTAL__END__-->
+---
+export type Props = { id: string };
+const { id } = Astro.props;
+---
+
+<!--__ASTRO_PORTAL__START__-->
+<div data-portal={id} style="all: unset; display: contents;">
+  <slot />
+</div>
+<!--__ASTRO_PORTAL__END__-->

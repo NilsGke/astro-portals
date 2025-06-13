@@ -1,6 +1,11 @@
 // integrations/portals.ts
+import { readFileSync } from "fs";
 import * as fs from "fs/promises";
 import * as path from "path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default function portals() {
   // Regex to find portal content.
@@ -12,6 +17,13 @@ export default function portals() {
   return {
     name: "astro-portals",
     hooks: {
+      "astro:config:setup"({ injectScript, command }) {
+        if (command === "dev") {
+          const scriptPath = path.join(__dirname, "client.js");
+          const scriptContent = readFileSync(scriptPath, "utf-8");
+          injectScript("page", scriptContent);
+        }
+      },
       "astro:build:done": async ({ dir }) => {
         console.log("Portal integration: Processing built files...");
 

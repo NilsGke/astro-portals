@@ -7,14 +7,20 @@ import Outlet from "../components/Outlet.astro";
   <body>
     <h1>Astro Portals example</h1>
 
-    <div>
-      <Portal>
-        <p>This is inside the portal</p>
-      </Portal>
-    </div>
+    <main style={{ width: "300px" }}>
+      <fieldset style={{ marginBottom: "10px" }}>
+        <legend> portal </legend>
 
-    <div>
-      <Outlet />
-    </div>
-  </body>
+        <Portal id="test">
+          <p>portal content</p>
+        </Portal>
+      </fieldset>
+
+      <fieldset>
+        <legend> outlet </legend>
+
+        <Outlet id="tes" />
+      </fieldset>
+    </main></body
+  >
 </html>

@@ -1,1 +1,12 @@
+---
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+---
+
 <!--__ASTRO_PORTAL_OUTLET__-->
+<div data-outlet={id} style="all: unset; display: contents;">
+  <slot />
+</div>
