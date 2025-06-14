@@ -2,6 +2,8 @@
 
 This is a small vibe coded poc that implements Portals in Astro.
 
+All the magic happens in [portal-integration/index.js](/integrations/portal-integration/index.js)
+
 ## Example
 
 Here's a minimal example showing how to use Astro Portals:
