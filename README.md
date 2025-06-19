@@ -1,6 +1,6 @@
 # Astro Portals
 
-This is a small vibe coded poc that implements Portals in Astro.
+This is a small heavily ai generated poc that implements Portals in Astro.
 
 All the magic happens in [portal-integration/index.js](/integrations/portal-integration/index.js)
 
